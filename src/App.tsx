@@ -1,7 +1,7 @@
 import { Cable, Camera, Wifi, Phone, ArrowRight, Mail } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
-import logo from 'figma:asset/5b9b15ba559832b19f4b6f3e93e15346d5659512.png';
+import logo from 'omnilogometal.png';
 
 export default function App() {
   return (
