@@ -138,9 +138,11 @@ export default function App() {
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
             <div className="flex-shrink-0">
-              <div className="h-32 w-32 md:h-40 md:w-40 rounded-full bg-neutral-800 border-2 border-neutral-700 flex items-center justify-center">
-                <span className="text-neutral-500 text-center px-4 text-xs">Founders Photo</span>
-              </div>
+              <img 
+                src="/omnilogometal.png" 
+                alt="Omnitrix Logo" 
+                className="h-32 w-32 md:h-40 md:w-40 rounded-full object-cover bg-neutral-800 border-2 border-neutral-700 p-4"
+              />
             </div>
             <div className="flex-1 text-center md:text-left">
               <h2 className="mb-3 text-white text-2xl md:text-3xl font-bold">
