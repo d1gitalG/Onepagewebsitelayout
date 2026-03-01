@@ -7,7 +7,10 @@ export default function App() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    serviceType: '',
+    jobAddress: '',
+    message: '',
+    botcheck: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -38,10 +41,13 @@ export default function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Replace with your Web3Forms access key
+            access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
             name: formData.name,
             email: formData.email,
+            serviceType: formData.serviceType || undefined,
+            jobAddress: formData.jobAddress || undefined,
             message: formData.message,
+            botcheck: formData.botcheck,
             subject:
               "New Contact Form Submission from Omnitrix.tech",
           }),
@@ -50,7 +56,14 @@ export default function App() {
 
       if (response.ok) {
         setSubmitStatus("success");
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          serviceType: "",
+          jobAddress: "",
+          message: "",
+          botcheck: "",
+        });
       } else {
         setSubmitStatus("error");
       }
@@ -295,6 +308,16 @@ export default function App() {
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="botcheck"
+              value={formData.botcheck}
+              onChange={handleChange}
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 type="text"
@@ -302,6 +325,7 @@ export default function App() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                required
                 className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
               />
               <Input
@@ -310,15 +334,37 @@ export default function App() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                required
                 className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
               />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                placeholder="Service Type (optional)"
+                name="serviceType"
+                value={formData.serviceType}
+                onChange={handleChange}
+                className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
+              />
+              <Input
+                type="text"
+                placeholder="Job Address (optional)"
+                name="jobAddress"
+                value={formData.jobAddress}
+                onChange={handleChange}
+                className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
+              />
+            </div>
+
             <textarea
               placeholder="Message"
               rows={5}
               name="message"
               value={formData.message}
               onChange={handleChange}
+              required
               className="w-full rounded-md border border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             />
             <Button
