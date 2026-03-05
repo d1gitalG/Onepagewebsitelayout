@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/json-schema-draft-07.json",
+  "project": "Omnitrix Website",
+  "repo": "omnitrix_repo",
+  "stack": ["Vite", "React", "Tailwind"],
+  "phase": "SHIPPING",
+  "primaryObjective": "Ship all 3: deploy website + contact form + lead-gen pipeline",
+  "updated": "2026-03-01",
+  "now": {
+    "goal": "Production deploy + working contact form",
+    "definitionOfDone": [
+      "Site is deployed to a stable production URL/domain",
+      "Contact form submits successfully and emails arrive at info@omnitrix.tech",
+      "Basic spam protection enabled (honeypot/captcha)",
+      "A quick verification checklist exists (steps + expected result)"
+    ]
+  },
+  "constraints": {
+    "preferredFormBackend": ["Web3Forms", "Formspree", "Netlify Forms"],
+    "notes": ["Keep it simple; no custom backend unless needed."]
+  },
+  "risks": [
+    "DNS/hosting credentials could block deployment",
+    "Email deliverability/spam filtering for contact form"
+  ]
+}

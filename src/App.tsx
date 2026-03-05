@@ -1,13 +1,24 @@
 import { Cable, Camera, Wifi, Phone, ArrowRight, Mail } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './components/ui/select';
 import { useState, useEffect } from 'react';
 
 export default function App() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    serviceType: '',
+    jobAddress: '',
+    message: '',
+    // Honeypot field (should remain empty)
+    botcheck: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -29,6 +40,13 @@ export default function App() {
     setIsSubmitting(true);
     setSubmitStatus("idle");
 
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
+    if (!accessKey) {
+      setSubmitStatus("error");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await fetch(
         "https://api.web3forms.com/submit",
@@ -38,19 +56,31 @@ export default function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Replace with your Web3Forms access key
+            access_key: accessKey,
+            subject: "New Contact Form Submission from Omnitrix.tech",
+
             name: formData.name,
             email: formData.email,
+            serviceType: formData.serviceType || undefined,
+            jobAddress: formData.jobAddress || undefined,
             message: formData.message,
-            subject:
-              "New Contact Form Submission from Omnitrix.tech",
+
+            // Web3Forms honeypot
+            botcheck: formData.botcheck,
           }),
         },
       );
 
       if (response.ok) {
         setSubmitStatus("success");
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          serviceType: "",
+          jobAddress: "",
+          message: "",
+          botcheck: "",
+        });
       } else {
         setSubmitStatus("error");
       }
@@ -295,6 +325,17 @@ export default function App() {
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Honeypot (hidden) */}
+            <input
+              type="text"
+              name="botcheck"
+              value={formData.botcheck}
+              onChange={handleChange}
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 type="text"
@@ -302,6 +343,7 @@ export default function App() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                required
                 className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
               />
               <Input
@@ -310,15 +352,47 @@ export default function App() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                required
                 className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
               />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Select
+                value={formData.serviceType}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, serviceType: value }))
+                }
+              >
+                <SelectTrigger className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white">
+                  <SelectValue placeholder="Service Type (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Structured Cabling">Structured Cabling</SelectItem>
+                  <SelectItem value="Security Cameras">Security Cameras</SelectItem>
+                  <SelectItem value="Wi-Fi & Networking">Wi-Fi & Networking</SelectItem>
+                  <SelectItem value="VoIP & Phone Systems">VoIP & Phone Systems</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Input
+                type="text"
+                placeholder="Job Address (optional)"
+                name="jobAddress"
+                value={formData.jobAddress}
+                onChange={handleChange}
+                className="h-12 rounded-md border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500"
+              />
+            </div>
+
             <textarea
               placeholder="Message"
               rows={5}
               name="message"
               value={formData.message}
               onChange={handleChange}
+              required
               className="w-full rounded-md border border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-500 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             />
             <Button

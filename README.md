@@ -7,5 +7,10 @@
 
   Run `npm i` to install the dependencies.
 
+  ### Environment
+  - Copy `.env.example` → `.env` and set:
+    - `VITE_WEB3FORMS_ACCESS_KEY`
+  - In Vercel: Project → Settings → Environment Variables → add `VITE_WEB3FORMS_ACCESS_KEY`
+
   Run `npm run dev` to start the development server.
   
